@@ -25,9 +25,10 @@ func init() {
 }
 
 func safeLoop() {
-	log := <-logChan
-
-	_log(log.format, log.prefix, log.argv...)
+	for {
+		log := <-logChan
+		_log(log.format, log.prefix, log.argv...)
+	}
 }
 
 func Ok(format string, a ...interface{}) {
