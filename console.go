@@ -56,7 +56,7 @@ func Ok(format string, a ...interface{}) {
 func Log(format string, a ...interface{}) {
 	logChan <- &log{
 		format,
-		"\x1B[1;34m  [LOG]\x1B[0m",
+		"\x1B[1;34m [INFO]\x1B[0m",
 		a,
 	}
 }
@@ -65,6 +65,14 @@ func Err(format string, a ...interface{}) {
 	logChan <- &log{
 		format,
 		"\x1B[1;31m  [ERR]\x1B[0m",
+		a,
+	}
+}
+
+func Fatat(format string, a ...interface{}) {
+	logChan <- &log{
+		format,
+		"\x1B[1;35m[FATAT]\x1B[0m",
 		a,
 	}
 }
@@ -80,7 +88,7 @@ func Warn(format string, a ...interface{}) {
 func Debug(format string, a ...interface{}) {
 	logChan <- &log{
 		format,
-		"\x1B[1;33m[DEBUG]\x1B[0m",
+		"\x1B[1;36m[DEBUG]\x1B[0m",
 		a,
 	}
 }
