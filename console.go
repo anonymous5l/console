@@ -2,19 +2,19 @@ package console
 
 import (
 	"fmt"
-	"sync"
+	// "sync"
 	"time"
 )
 
-type log struct {
-	format string
-	prefix string
-	argv   []interface{}
-}
+// type log struct {
+// 	format string
+// 	prefix string
+// 	argv   []interface{}
+// }
 
-var logChan chan *log
-var mu sync.Mutex
-var cond *sync.Cond
+// var logChan chan *log
+// var mu sync.Mutex
+// var cond *sync.Cond
 
 func _log(format string, prefix string, a ...interface{}) (n int, err error) {
 	now := time.Now().Format("2006-01-02 15:04:05")
@@ -24,76 +24,86 @@ func _log(format string, prefix string, a ...interface{}) (n int, err error) {
 	args[1] = prefix
 	args = append(args, a...)
 
-	return fmt.Printf("[%s] %s "+format+"\n", args...)
+	return fmt.Println(fmt.Sprintf("[%s] %s "+format, args...))
 }
 
-func init() {
-	cond = sync.NewCond(&mu)
-	mu.Lock()
-	logChan = make(chan *log)
-	go safeLoop()
-}
+// func init() {
+// 	cond = sync.NewCond(&mu)
+// 	mu.Lock()
+// 	logChan = make(chan *log)
+// 	go safeLoop()
+// }
 
-func safeLoop() {
-	for {
-		log, ok := <-logChan
-		if !ok {
-			break
-		}
-		_log(log.format, log.prefix, log.argv...)
-	}
-	cond.Signal()
-}
+// func safeLoop() {
+// 	for {
+// 		log, ok := <-logChan
+// 		if !ok {
+// 			break
+// 		}
+// 		_log(log.format, log.prefix, log.argv...)
+// 	}
+// 	cond.Signal()
+// }
 
 func Ok(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;32m   [OK]\x1B[0m",
-		a,
-	}
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;32m   [OK]\x1B[0m",
+	// 	a,
+	// }
+	_log(format, "\x1B[1;32m   [OK]\x1B[0m", a...)
 }
 
 func Log(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;34m [INFO]\x1B[0m",
-		a,
-	}
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;34m [INFO]\x1B[0m",
+	// 	a,
+	// }
+	_log(format, "\x1B[1;34m [INFO]\x1B[0m", a...)
 }
 
 func Err(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;31m  [ERR]\x1B[0m",
-		a,
-	}
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;31m  [ERR]\x1B[0m",
+	// 	a,
+	// }
+
+	_log(format, "\x1B[1;31m  [ERR]\x1B[0m", a...)
 }
 
-func Fatat(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;35m[FATAT]\x1B[0m",
-		a,
-	}
+func Fatal(format string, a ...interface{}) {
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;35m[FATAT]\x1B[0m",
+	// 	a,
+	// }
+
+	_log(format, "\x1B[1;35m[FATAL]\x1B[0m", a...)
 }
 
 func Warn(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;33m [WARN]\x1B[0m",
-		a,
-	}
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;33m [WARN]\x1B[0m",
+	// 	a,
+	// }
+
+	_log(format, "\x1B[1;33m [WARN]\x1B[0m", a...)
 }
 
 func Debug(format string, a ...interface{}) {
-	logChan <- &log{
-		format,
-		"\x1B[1;36m[DEBUG]\x1B[0m",
-		a,
-	}
+	// logChan <- &log{
+	// 	format,
+	// 	"\x1B[1;36m[DEBUG]\x1B[0m",
+	// 	a,
+	// }
+
+	_log(format, "\x1B[1;36m[DEBUG]\x1B[0m", a...)
 }
 
-func Abort() {
-	close(logChan)
-	cond.Wait()
-}
+// func Abort() {
+// 	close(logChan)
+// 	cond.Wait()
+// }
