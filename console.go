@@ -2,6 +2,7 @@ package console
 
 import (
 	"fmt"
+	"os"
 	// "sync"
 	"time"
 )
@@ -30,6 +31,7 @@ const (
 
 var mLevel ConsoleLevel
 var mColor bool = true
+var mFd = os.Stdout
 
 func _log(format string, color int, prefix string, a ...interface{}) (n int, err error) {
 	now := time.Now().Format("2006-01-02 15:04:05")
@@ -44,7 +46,7 @@ func _log(format string, color int, prefix string, a ...interface{}) (n int, err
 	}
 	args = append(args, a...)
 
-	return fmt.Println(fmt.Sprintf("[%s] %s "+format, args...))
+	return fmt.Fprintln(mFd,fmt.Sprintf("[%s] %s "+format, args...))
 }
 
 // func init() {
@@ -137,6 +139,10 @@ func SetLevel(level ConsoleLevel) {
 
 func SetColor(color bool) {
 	mColor = color
+}
+
+func SetFD(f *os.File) {
+	mFd = f
 }
 
 // func Abort() {
